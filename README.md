@@ -2,16 +2,6 @@
 
 A containerized ETL pipeline that extracts real-time weather data from the Open-Meteo API, transforms the API response with Python, and loads structured observations into PostgreSQL for SQL-based analysis.
 
-## Architecture
-
-```
-flowchart LR
-    A[Open-Meteo API] -->|Extract JSON| B[Python ETL Pipeline]
-    B -->|Transform Fields| C[Clean Weather Record]
-    C -->|Parameterized INSERT| D[(PostgreSQL)]
-    D -->|Aggregate Queries| E[SQL Analysis]
-```
-
 ## Project Overview
 
 This project demonstrates a complete ETL workflow using a real-world public data source:
