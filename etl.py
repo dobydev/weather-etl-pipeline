@@ -30,15 +30,13 @@ def extract_weather():
 def transform_weather(raw_weather):
     current_weather = raw_weather["current"]
 
-    transformed_weather = {
+    return {
         "city": CITY,
         "temperature_celsius": current_weather["temperature_2m"],
         "wind_speed_kmh": current_weather["wind_speed_10m"],
         "weather_code": current_weather["weather_code"],
         "observed_at": current_weather["time"],
     }
-
-    return transformed_weather
 
 
 def load_weather(clean_weather):
@@ -61,6 +59,7 @@ def load_weather(clean_weather):
             observed_at
         )
         VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT (city, observed_at) DO NOTHING
         RETURNING id;
     """
 
@@ -75,13 +74,16 @@ def load_weather(clean_weather):
         ),
     )
 
-    inserted_id = cursor.fetchone()[0]
+    inserted_row = cursor.fetchone()
 
     connection.commit()
     cursor.close()
     connection.close()
 
-    return inserted_id
+    if inserted_row is None:
+        return None
+
+    return inserted_row[0]
 
 
 if __name__ == "__main__":
@@ -89,4 +91,7 @@ if __name__ == "__main__":
     clean_weather = transform_weather(raw_weather)
     new_row_id = load_weather(clean_weather)
 
-    print(f"Weather data loaded successfully. New row ID: {new_row_id}")
+    if new_row_id is None:
+        print("Observation already exists. No duplicate row was inserted.")
+    else:
+        print(f"Weather data loaded successfully. New row ID: {new_row_id}")

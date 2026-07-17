@@ -8,6 +8,5 @@ CREATE TABLE IF NOT EXISTS weather_observations (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE weather_observations
-ADD CONSTRAINT unique_city_observation
-UNIQUE (city, observed_at);
+CREATE UNIQUE INDEX IF NOT EXISTS unique_city_observation_idx
+ON weather_observations (city, observed_at);
