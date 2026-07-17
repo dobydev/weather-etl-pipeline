@@ -7,3 +7,7 @@ CREATE TABLE IF NOT EXISTS weather_observations (
     observed_at TIMESTAMP NOT NULL,
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE weather_observations
+ADD CONSTRAINT unique_city_observation
+UNIQUE (city, observed_at);
